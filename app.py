@@ -1,11 +1,12 @@
-# تأكد أن الكود بهذا الشكل:
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime
 import asset_models
-import data_processor  
+import data_processor
+import config  # تأكد من استيراد config
+
 # إعداد الصفحة
 st.set_page_config(
     page_title="نظام إدارة الأصول الثابتة",
@@ -37,35 +38,15 @@ class FixedAssetsApp:
         self.analyzer = None
         self.load_data()
 
-def load_data(self):
-    try:
-        # تحميل البيانات من ملف Excel
-        self.df = data_processor.DataProcessor.load_data(
-            config.APP_CONFIG["DATA_FILE"],
-            config.APP_CONFIG["SHEET_NAME"]
-        )
-
-        # تنفيذ المعالجة المسبقة
-        self.df = data_processor.DataProcessor.preprocess_data(self.df)
-
-        # إضافة الأعمدة المحسوبة (مثل العمر ونسبة الإهلاك)
-        self.df = data_processor.DataProcessor.calculate_additional_metrics(self.df)
-
-        # إنشاء محلل البيانات
-        self.analyzer = asset_models.AssetAnalyzer(self.df)
-
-        # رسالة نجاح
-        st.success("✅ تم تحميل البيانات بنجاح")
-
-    except Exception as e:
-        st.error(f"❌ خطأ في تحميل/معالجة البيانات: {str(e)}")
+    def load_data(self):
         """تحميل البيانات ومعالجتها"""
         try:
-            # 1) تحميل
+            # 1) تحميل البيانات
             df = data_processor.DataProcessor.load_data(
                 config.APP_CONFIG["DATA_FILE"],
                 config.APP_CONFIG["SHEET_NAME"]
             )
+            
             # 2) معالجة مسبقة + إضافات حسابية + إعادة الأسماء القياسية
             dp = data_processor.DataProcessor()
             df = dp.preprocess_data(df)
@@ -76,6 +57,7 @@ def load_data(self):
             self.df = df
             self.analyzer = asset_models.AssetAnalyzer(self.df)
             st.success("✅ تم تحميل البيانات ومعالجتها بنجاح")
+            
         except Exception as e:
             st.error(f"❌ خطأ في تحميل/معالجة البيانات: {str(e)}")
 
