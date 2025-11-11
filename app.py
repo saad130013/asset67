@@ -1,12 +1,11 @@
+# تأكد أن الكود بهذا الشكل:
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 from datetime import datetime
-
 import asset_models
-import data_processor
-import config
-
+import data_processor  
 # إعداد الصفحة
 st.set_page_config(
     page_title="نظام إدارة الأصول الثابتة",
