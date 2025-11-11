@@ -38,7 +38,28 @@ class FixedAssetsApp:
         self.analyzer = None
         self.load_data()
 
-    def load_data(self):
+def load_data(self):
+    try:
+        # تحميل البيانات من ملف Excel
+        self.df = data_processor.DataProcessor.load_data(
+            config.APP_CONFIG["DATA_FILE"],
+            config.APP_CONFIG["SHEET_NAME"]
+        )
+
+        # تنفيذ المعالجة المسبقة
+        self.df = data_processor.DataProcessor.preprocess_data(self.df)
+
+        # إضافة الأعمدة المحسوبة (مثل العمر ونسبة الإهلاك)
+        self.df = data_processor.DataProcessor.calculate_additional_metrics(self.df)
+
+        # إنشاء محلل البيانات
+        self.analyzer = asset_models.AssetAnalyzer(self.df)
+
+        # رسالة نجاح
+        st.success("✅ تم تحميل البيانات بنجاح")
+
+    except Exception as e:
+        st.error(f"❌ خطأ في تحميل/معالجة البيانات: {str(e)}")
         """تحميل البيانات ومعالجتها"""
         try:
             # 1) تحميل
